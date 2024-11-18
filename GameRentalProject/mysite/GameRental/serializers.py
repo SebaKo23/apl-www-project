@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User, Game, Rental, Review, Payment
+from django.contrib.auth.hashers import make_password
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,20 +8,15 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'password' : {'write_only' : True}}
 
-    def create(self, validated_data): # Methods for hashing passwords
-        user = User(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+    def create(self, validated_data):
+        if 'password' in validated_data:
+            validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        password = validated_data.pop('password', None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        if password:
-            instance.set_password(password)
-        instance.save()
-        return instance
+        if 'password' in validated_data:
+            validated_data['password'] = make_password(validated_data['password'])
+        return super().update(instance, validated_data)
 
 class GameSerializer(serializers.ModelSerializer):
     availability_status = serializers.SerializerMethodField()

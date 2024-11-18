@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from django.core.exceptions import ValidationError
 
+
 class User(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True, blank=True, null=False)
     username = models.CharField(db_column='Username', max_length=150, unique=True, null=False)

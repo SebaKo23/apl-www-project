@@ -21,4 +21,5 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 urlpatterns = [
     path("GameRental/", include("GameRental.urls")),
     path("admin/", admin.site.urls),
+    path('admin-tools/', include('admin_tools.urls'), ),
 ] + debug_toolbar_urls()
