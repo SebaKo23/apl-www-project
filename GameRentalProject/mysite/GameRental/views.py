@@ -128,7 +128,8 @@ class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        custom_user = User.objects.get(username=self.request.user.username)
+        serializer.save(user=custom_user)
 
 # Payment CRUD
 class PaymentViewSet(ModelViewSet):
@@ -139,5 +140,6 @@ class PaymentViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Rental.objects.all()
-        return Rental.objects.filter(user=self.request.user)
+            return Payment.objects.all()
+        custom_user = User.objects.get(username=self.request.user.username)
+        return Payment.objects.filter(user=custom_user)
